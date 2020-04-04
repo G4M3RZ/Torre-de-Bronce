@@ -5,7 +5,8 @@ using UnityEngine;
 public class Swipe : MonoBehaviour
 {
     public float _swipeMagnitude;
-    public bool _tap, _swipeLeft, _swipeRight, _blockSwipe;
+    [HideInInspector]
+    public bool _tap, _swipeLeft, _swipeRight, _swipeUp, _swipeDown, _blockSwipe;
     private bool _isDraging = false;
     private Vector2 _startTouch, _swipeDelta;
 
@@ -14,7 +15,7 @@ public class Swipe : MonoBehaviour
         if(!_blockSwipe)
         {
             #region Swipe System
-            _tap = _swipeLeft = _swipeRight = false;
+            _tap = _swipeLeft = _swipeRight = _swipeDown = _swipeUp = false;
 
             #region Standalone Inputs
             if (Input.GetMouseButtonDown(0))
@@ -77,14 +78,14 @@ public class Swipe : MonoBehaviour
                     else
                         _swipeRight = true;
                 }
-                /*else
+                else
                 {
                     //Up or Down
                     if (y < 0)
-                        _swipeLeft = true;
+                        _swipeDown = true;
                     else
-                        _swipeRight = true;
-                }*/
+                        _swipeUp = true;
+                }
 
                 Reset();
             }
@@ -100,4 +101,6 @@ public class Swipe : MonoBehaviour
     public Vector2 SwipeDelta { get { return _swipeDelta; } }
     public bool SwipeLeft { get { return _swipeLeft; } }
     public bool SwipeRight { get { return _swipeRight; } }
+    public bool SwipeUp { get { return _swipeUp; } }
+    public bool SwipeDown { get { return _swipeDown; } }
 }

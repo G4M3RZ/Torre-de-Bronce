@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class RotorCompuerta : MonoBehaviour
 {
-    public int _num;
-    //[HideInInspector]
+    [HideInInspector]
     public bool _isOpen;
-    private GameObject _compuerta;
-    private BoxCollider _collider;
+    [HideInInspector]
+    public GameObject _compuerta;
+    private SphereCollider _collider;
     private Quaternion _startRot, _endRot;
+    public Vector3 _torretaRotation;
 
     private void Start()
     {
         _compuerta = this.gameObject.transform.GetChild(0).gameObject;
-        _collider = GetComponent<BoxCollider>();
-        _collider.isTrigger = true;
+        _collider = GetComponent<SphereCollider>();
         _startRot = transform.localRotation;
         _endRot.eulerAngles = Vector3.zero;
     }
