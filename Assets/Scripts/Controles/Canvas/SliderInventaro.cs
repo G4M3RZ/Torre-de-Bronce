@@ -35,7 +35,6 @@ public class SliderInventaro : MonoBehaviour
     private void FixedUpdate()
     {
         Slider();
-        Slots();
     }
 
     void Slider()
@@ -61,10 +60,5 @@ public class SliderInventaro : MonoBehaviour
             if (pong == _startPos)
                 _swipeDown = false;
         }
-    }
-
-    void Slots()
-    {
-
     }
 }

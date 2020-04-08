@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine;
 
-public class Torreta : MonoBehaviour , IDragHandler
+public class Torreta : MonoBehaviour , IDragHandler, IEndDragHandler
 {
     private bool _drag;
 
@@ -15,13 +15,15 @@ public class Torreta : MonoBehaviour , IDragHandler
     private SliderInventaro _inventory;
     #endregion
 
-    private Vector3 _startPos, _finalPos, _baseRotation;
+    private Vector3 _finalPos, _baseRotation;
 
     private void Start()
     {
         _drag = false;
-        _startPos = transform.localPosition;
-        _finalPos = _startPos;
+        if (transform.parent == null)
+            _finalPos = transform.position;
+        else
+            _finalPos = new Vector3(0, -50, 0);
 
         #region AcessObjects
         _swipe = GameObject.FindGameObjectWithTag("GameController").GetComponent<Swipe>();
@@ -42,6 +44,11 @@ public class Torreta : MonoBehaviour , IDragHandler
         }
     }
 
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        Debug.Log("soltar");
+    }
+
     private void OnMouseUp()
     {
         if(_parent != null)
@@ -58,7 +65,17 @@ public class Torreta : MonoBehaviour , IDragHandler
         }
         else
         {
-            _finalPos = _startPos;
+            //convertir a hijo de slot en el inventario
+            for (int i = 0; i < _inventory._inventory.Count; i++)
+            {
+                if (_inventory._inventory[i].transform.childCount == 0)
+                {
+                    transform.parent = _inventory._inventory[i].transform;
+                    break;
+                }   
+            }
+
+            _finalPos = new Vector3(0,-50, 0);
             _baseRotation = Vector3.zero;
         }
 
@@ -80,12 +97,24 @@ public class Torreta : MonoBehaviour , IDragHandler
             _parent = _tkp._currentObject;
         else
         {
-            transform.parent = _inventory._inventory[1].transform;
-            
-            if(_parent != null)
+            transform.parent = null;
+
+            if (_parent != null)
                 _parent.GetComponentInParent<RotorCompuerta>()._isOpen = false;
             
             _parent = null;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Base"))
+        {
+            _parent = other.transform.GetChild(0).gameObject;
+            transform.parent = _parent.transform;
+            _baseRotation = other.GetComponent<RotorCompuerta>()._torretaRotation;
+            transform.localPosition = _finalPos = Vector3.zero;
+            other.GetComponent<RotorCompuerta>()._isOpen = true;
         }
     }
 }
